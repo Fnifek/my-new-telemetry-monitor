@@ -1,9 +1,13 @@
-# Cooling Telemetry Monitor — лабораторная работа № 2
+# Cooling Telemetry Monitor — ЛР2 и ЛР3
 
 Учебный проект по дисциплине «Программное и аппаратное обеспечение информационных систем».
-Это программная часть системы мониторинга, фильтрации и анализа аппаратной телеметрии
-систем охлаждения вычислительного узла: приём отсчётов от математической модели датчика,
-буферизация, дискретизация 100 Гц и предварительная цифровая обработка.
+Это сквозной проект системы мониторинга, фильтрации и анализа аппаратной телеметрии
+систем охлаждения вычислительного узла:
+
+- **ЛР2** — программная часть: приём отсчётов, буферизация, дискретизация 100 Гц,
+  КИХ + EMA и Qt GUI;
+- **ЛР3** — аппаратная часть и её модель: NTC, ADS1115, ESP32, тахометрия, кадр
+  и AES-256-GCM.
 
 Проект продолжает ЛР1: архитектура, UML-диаграммы и схема базы данных остались в отчёте,
 а здесь реализован исполняемый конвейер приёма данных. В ЛР3 тот же конвейер подключается
@@ -23,7 +27,9 @@
 - CLI `ctm_acq` с режимами обычного прогона и `--verify`;
 - **Qt Widgets GUI** `cooling_telemetry_gui`: график, текущие значения, старт/стоп,
   экспорт CSV и безопасная передача отсчётов из потока обработки в GUI;
-- 27 атомарных проверок в `ctm_tests` (в отчёте они укрупнены до 18).
+- **ЛР3** `lab3/hw_model`: NTC + ADS1115, тахометрия, `TelemetryFrame` 32/60 байт,
+  CRC-16/CCITT, AES-256-GCM и 24 проверки `--selftest`;
+- 27 атомарных проверок ЛР2 в `ctm_tests` (в отчёте они укрупнены до 18).
 
 ![Qt GUI](docs/gui-preview.png)
 
@@ -66,9 +72,12 @@ include/ctm/
   csv_writer.hpp            выгрузка CSV
   platform.hpp              разрешение таймера Windows
 src/                        реализации и CLI
+gui/                        Qt Widgets-приложение
+lab3/hw_model/              модель аппаратного канала ЛР3, прошивка и 24 теста
 tests/test_main.cpp         27 проверок без внешних фреймворков
 tools/plot_telemetry.py     SVG-график без matplotlib
-docs/                       подробные пояснения по слоям
+docs/                       подробные пояснения по слоям ЛР2
+lab3/docs/                  пояснения по ЛР3
 data/sample_telemetry.csv   пример выгрузки
 data/telemetry.svg          пример графика
 ```
@@ -154,6 +163,25 @@ Qt Creator, `gui/CMakeLists.txt` для CMake или корневой CMake с
 `QMetaObject::invokeMethod(..., Qt::QueuedConnection)` — виджеты не трогаются из
 чужого потока. Подробнее: [docs/07-qt-gui.md](docs/07-qt-gui.md).
 
+## ЛР3 — аппаратная часть
+
+```powershell
+cd lab3\hw_model
+powershell -ExecutionPolicy Bypass -File .\build.ps1
+.\build\ctm_hw.exe --selftest
+```
+
+Это модель измерительного модуля: NTC 10 кОм / B3950 → ADS1115 16 бит → ESP32 →
+`TelemetryFrame` 32 байта → CRC-16/CCITT → AES-256-GCM → 60 байт по UART.
+Требуется Windows (BCrypt/CNG) и g++/CMake.
+
+`--selftest` — 24 проверки, включая вектор NIST для AES-256-GCM, подмену тега и
+CRC. Другие режимы: `--simulate`, `--quant`, `--tach`, `--latency`, `--freq`,
+`--demo-frame`. Прошивка ESP32 лежит в `lab3/hw_model/firmware_esp32.cpp`.
+
+Подробности: [lab3/README.md](lab3/README.md), [docs/01](lab3/docs/01-hardware-model.md),
+[docs/02](lab3/docs/02-frame-and-crypto.md), [docs/03](lab3/docs/03-tests-and-results.md).
+
 ## Результаты
 
 Параметры модели совпадают с отчётом ЛР2:
@@ -214,7 +242,11 @@ Qt Creator, `gui/CMakeLists.txt` для CMake или корневой CMake с
 - [docs/04-report-mapping.md](docs/04-report-mapping.md) — что из отчёта ЛР2 где лежит в коде;
 - [docs/05-code-tour.md](docs/05-code-tour.md) — порядок чтения кода и вопросы для защиты;
 - [docs/06-git-history.md](docs/06-git-history.md) — фактические хеши, даты и ветки;
-- [docs/07-qt-gui.md](docs/07-qt-gui.md) — устройство и сборка Qt-интерфейса.
+- [docs/07-qt-gui.md](docs/07-qt-gui.md) — устройство и сборка Qt-интерфейса;
+- [lab3/README.md](lab3/README.md) — аппаратная модель ЛР3;
+- [lab3/docs/01-hardware-model.md](lab3/docs/01-hardware-model.md) — тракт и расчёты;
+- [lab3/docs/02-frame-and-crypto.md](lab3/docs/02-frame-and-crypto.md) — кадр и AES-GCM;
+- [lab3/docs/03-tests-and-results.md](lab3/docs/03-tests-and-results.md) — 24 теста и результаты.
 
 ## Публикация на GitHub
 
