@@ -193,6 +193,34 @@ python tools/plot_telemetry.py data/sample_telemetry.csv data/telemetry.svg
 - [docs/05-code-tour.md](docs/05-code-tour.md) — порядок чтения кода и вопросы для защиты;
 - [docs/06-git-history.md](docs/06-git-history.md) — фактические хеши, даты и ветки.
 
+## Публикация на GitHub
+
+В `origin` уже прописан адрес из отчёта:
+
+```bash
+git remote -v
+# origin  https://github.com/Fnifek/Software-and-hardware-for-an-information-system.git
+```
+
+Если репозиторий на GitHub уже создан и вы авторизованы:
+
+```bash
+git push -u origin main
+git push origin develop
+git push --tags
+```
+
+Если на GitHub уже есть история (например, старый `README`), сначала выполните
+`git pull --rebase origin main`, разрешите конфликты и только потом пушьте. Токен
+в репозиторий не коммитится: используйте Git Credential Manager или `gh auth login`.
+
+Локальная копия истории лежит в `lab2_repo.bundle` (вне репозитория). Клонировать её
+можно так:
+
+```bash
+git clone lab2_repo.bundle cooling-telemetry-monitor
+```
+
 ## Ограничения
 
 - Это учебная модель, а не драйвер реального датчика: GPIO, COM-порт и АЦП подменяются
