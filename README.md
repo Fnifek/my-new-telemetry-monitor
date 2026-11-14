@@ -190,7 +190,8 @@ python tools/plot_telemetry.py data/sample_telemetry.csv data/telemetry.svg
 - [docs/02-signal-processing.md](docs/02-signal-processing.md) — модель тепла, квантование, КИХ и EMA;
 - [docs/03-build-and-test.md](docs/03-build-and-test.md) — сборка, CLI, тесты, типовые ошибки;
 - [docs/04-report-mapping.md](docs/04-report-mapping.md) — что из отчёта ЛР2 где лежит в коде;
-- [docs/05-code-tour.md](docs/05-code-tour.md) — порядок чтения кода и вопросы для защиты.
+- [docs/05-code-tour.md](docs/05-code-tour.md) — порядок чтения кода и вопросы для защиты;
+- [docs/06-git-history.md](docs/06-git-history.md) — фактические хеши, даты и ветки.
 
 ## Ограничения
 
