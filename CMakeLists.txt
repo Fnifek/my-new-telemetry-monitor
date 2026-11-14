@@ -50,3 +50,9 @@ if(CTM_BUILD_GUI)
         message(STATUS "Qt6 Widgets not found: GUI target skipped")
     endif()
 endif()
+
+# ЛР3 использует Windows CNG (bcrypt), поэтому только на Windows.
+option(CTM_BUILD_LAB3 "Build Lab 3 hardware model (Windows only)" ON)
+if(CTM_BUILD_LAB3 AND WIN32)
+    add_subdirectory(lab3/hw_model)
+endif()
