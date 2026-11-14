@@ -39,3 +39,14 @@ target_link_libraries(ctm_tests PRIVATE ctm_core)
 
 enable_testing()
 add_test(NAME ctm_tests COMMAND ctm_tests)
+
+# Qt GUI собирается только если найден Qt6 Widgets. Ядро и CLI от Qt не зависят.
+option(CTM_BUILD_GUI "Build Qt Widgets GUI when Qt6 is available" ON)
+if(CTM_BUILD_GUI)
+    find_package(Qt6 QUIET COMPONENTS Widgets)
+    if(Qt6_FOUND)
+        add_subdirectory(gui)
+    else()
+        message(STATUS "Qt6 Widgets not found: GUI target skipped")
+    endif()
+endif()

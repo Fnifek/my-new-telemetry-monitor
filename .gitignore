@@ -8,6 +8,13 @@ cmake-build-*/
 *.pdb
 *.ilk
 
+# Qt GUI
+gui/release/
+gui/build/
+gui/cmake-build/
+gui/moc_*.cpp
+gui/*.exe
+
 # IDE
 .vscode/
 .idea/
