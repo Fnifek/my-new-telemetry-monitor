@@ -1,0 +1,25 @@
+# Сборка
+build/
+out/
+cmake-build-*/
+*.exe
+*.o
+*.obj
+*.pdb
+*.ilk
+
+# IDE
+.vscode/
+.idea/
+*.user
+
+# Python
+__pycache__/
+*.pyc
+
+# Данные: генерируемые CSV не коммитим, но небольшой пример оставляем.
+*.csv
+!data/sample_telemetry.csv
+
+# Локальные логи
+*.log
