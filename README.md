@@ -21,7 +21,11 @@
 - `AcquisitionPipeline` — два потока: источник 200 Гц и обработка 100 Гц;
 - `CsvWriter` — выгрузка `time_s,raw,filtered,seq` для графиков и внешнего анализа;
 - CLI `ctm_acq` с режимами обычного прогона и `--verify`;
+- **Qt Widgets GUI** `cooling_telemetry_gui`: график, текущие значения, старт/стоп,
+  экспорт CSV и безопасная передача отсчётов из потока обработки в GUI;
 - 27 атомарных проверок в `ctm_tests` (в отчёте они укрупнены до 18).
+
+![Qt GUI](docs/gui-preview.png)
 
 ## Архитектура
 
@@ -132,6 +136,24 @@ python tools/plot_telemetry.py data/sample_telemetry.csv data/telemetry.svg
 `ModelSensor::last_truth()` — истинной температурой до шума и квантования. Такой режим
 детерминирован и не зависит от планировщика, поэтому по нему удобно проверять формулы.
 
+## Qt GUI
+
+```powershell
+cd gui
+./build_gui.ps1
+./release/cooling_telemetry_gui.exe
+```
+
+Скрипт собирает GUI без qmake/CMake: вызывает `moc`, компилирует ядро и окно
+Qt-компилятором и копирует Qt DLL в `release/`. Альтернативы — `gui/gui.pro` для
+Qt Creator, `gui/CMakeLists.txt` для CMake или корневой CMake с
+`-DCMAKE_PREFIX_PATH=C:/Qt/6.11.1/mingw_64`.
+
+Что в окне: старт/стоп, текущая/сырая температура, шум, темп обработки, график
+КИХ + EMA и экспорт CSV. Отсчёты из потока обработки передаются в GUI через
+`QMetaObject::invokeMethod(..., Qt::QueuedConnection)` — виджеты не трогаются из
+чужого потока. Подробнее: [docs/07-qt-gui.md](docs/07-qt-gui.md).
+
 ## Результаты
 
 Параметры модели совпадают с отчётом ЛР2:
@@ -191,7 +213,8 @@ python tools/plot_telemetry.py data/sample_telemetry.csv data/telemetry.svg
 - [docs/03-build-and-test.md](docs/03-build-and-test.md) — сборка, CLI, тесты, типовые ошибки;
 - [docs/04-report-mapping.md](docs/04-report-mapping.md) — что из отчёта ЛР2 где лежит в коде;
 - [docs/05-code-tour.md](docs/05-code-tour.md) — порядок чтения кода и вопросы для защиты;
-- [docs/06-git-history.md](docs/06-git-history.md) — фактические хеши, даты и ветки.
+- [docs/06-git-history.md](docs/06-git-history.md) — фактические хеши, даты и ветки;
+- [docs/07-qt-gui.md](docs/07-qt-gui.md) — устройство и сборка Qt-интерфейса.
 
 ## Публикация на GitHub
 
@@ -225,8 +248,8 @@ git clone lab2_repo.bundle cooling-telemetry-monitor
 
 - Это учебная модель, а не драйвер реального датчика: GPIO, COM-порт и АЦП подменяются
   генератором.
-- Qt-интерфейс и PostgreSQL в этом репозитории не реализованы: в ЛР2 достаточно ядра и CLI,
-  а запись в БД и GUI — следующие слои. Интерфейс `Sink` оставлен точкой подключения.
+- PostgreSQL/libpqxx в этом репозитории не реализованы: запись в БД — ЛР4. Интерфейс
+  `Sink` оставлен точкой подключения криптомодуля, БД и GUI.
 - `timeBeginPeriod` влияет на систему глобально; в production его нужно включать аккуратно.
 - Дата/хеши коммитов в отчёте ЛР2 могут не совпадать с этим репозиторием: см.
   [docs/04-report-mapping.md](docs/04-report-mapping.md).
