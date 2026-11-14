@@ -86,6 +86,8 @@ def main():
     step_x = nice_step(t_max, 6)
     step_y = nice_step(v_max - v_min, 6)
     tx = ticks(0, t_max, step_x)
+    if tx and t_max - tx[-1] > step_x * 0.25:
+        tx.append(t_max)
     ty = ticks(v_min, v_max, step_y)
 
     parts = []

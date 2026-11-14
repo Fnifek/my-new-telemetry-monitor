@@ -14,6 +14,8 @@
 <text x="803.4" y="584" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#5f6368">40</text>
 <line x1="981.8" y1="60" x2="981.8" y2="560" stroke="#e8eaed" stroke-width="1"/>
 <text x="981.8" y="584" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#5f6368">50</text>
+<line x1="1160.0" y1="60" x2="1160.0" y2="560" stroke="#e8eaed" stroke-width="1"/>
+<text x="1160.0" y="584" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#5f6368">59.9937</text>
 <line x1="90" y1="536.8" x2="1160" y2="536.8" stroke="#e8eaed" stroke-width="1"/>
 <text x="78" y="540.8" text-anchor="end" font-family="Segoe UI, Arial" font-size="13" fill="#5f6368">40.0</text>
 <line x1="90" y1="418.9" x2="1160" y2="418.9" stroke="#e8eaed" stroke-width="1"/>
